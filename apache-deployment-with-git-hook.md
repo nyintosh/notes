@@ -113,7 +113,7 @@ sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-availab
 sudo vim /etc/apache2/sites-available/{site_name}.conf
 ```
 
-*Update the configuration file according to your site’s requirements*
+> *Update the configuration file according to your site’s requirements*
 
 ### 7.2 Enable the Site
 
