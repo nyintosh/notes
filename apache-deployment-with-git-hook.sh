@@ -75,5 +75,13 @@ sudo a2enmod rewrite
 sudo systemctl restart apache2
 check_success "mod rewrite enablement"
 
+# Add site to Apache availability
+echo -e "\n📄 Adding site to Apache availability for '$SITE_NAME'..."
+sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$SITE_NAME.conf
+sudo a2ensite $SITE_NAME.conf
+sudo systemctl restart apache2
+check_success "Add site availability"
+
 echo -e "\n🎊 Server setup for '$SITE_NAME' completed successfully! 🎊"
 echo -e "🌟 Your Apache server is now ready to serve your site at /var/www/$SITE_NAME 🌟\n"
+echo -e "📝 **Important:** Please update **/etc/apache2/sites-available/$SITE_NAME.conf** to configure your site properly.\n"
