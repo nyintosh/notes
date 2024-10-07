@@ -64,7 +64,7 @@ echo '#!/bin/sh
 WORK_TREE=/var/www/'$SITE_NAME'
 GIT_DIR=/var/repo/'$SITE_NAME'.git
 
-git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f develop' > post-receive
+git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f' > post-receive
 chmod +x post-receive
 check_success "post-receive script setup"
 
