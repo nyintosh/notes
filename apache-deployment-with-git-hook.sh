@@ -60,7 +60,7 @@ WORK_TREE=/var/www/'$SITE_NAME'
 GIT_DIR=/var/repo/'$SITE_NAME'.git
 
 read oldrev newrev refname
-BRANCH=$(echo $refname | sed 's|refs/heads/||')
+BRANCH=$(echo $refname | sed '\''s|refs/heads/||'\'')
 
 git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f $BRANCH' > /var/repo/${SITE_NAME}.git/hooks/post-receive
 chmod +x /var/repo/${SITE_NAME}.git/hooks/post-receive
