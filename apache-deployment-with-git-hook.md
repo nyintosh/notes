@@ -2,20 +2,20 @@
 
 ## 1. Server Setup
 
-> Install Ubuntu Updates
+### 1.1 Install Ubuntu Updates
 
 ```bash
 sudo apt update && sudo apt upgrade
 ```
 
-> Install Apache2 and Required Libraries
+### 1.2 Install Apache2 and Required Libraries
 
 ```bash
 sudo apt install apache2
 sudo apt install php libapache2-mod-php php-pgsql php-xml php-mbstring php-curl php-gd php-zip unzip
 ```
 
-> Restart Apache Server
+### 1.3 Restart Apache Server
 
 ```bash
 sudo systemctl restart apache2
@@ -23,21 +23,21 @@ sudo systemctl restart apache2
 
 ## 2. Directory Structure
 
-> Setup Web Directory
+### 2.1 Setup Web Directory
 
 ```bash
 sudo mkdir /var/www/{site_name}
 sudo chown {user}:root /var/www/{site_name}
 ```
 
-> Setup Git Directory
+### 2.2 Setup Git Directory
 
 ```bash
 sudo mkdir -p /var/repo/{site_name}.git
 sudo chown {user}:root /var/repo/{site_name}.git
 ```
 
-> Initialize Git Repository
+### 2.3 Initialize Git Repository
 
 ```bash
 cd /var/repo/{site_name}.git
@@ -46,7 +46,7 @@ git init --bare
 
 ## 3. Git Hooks Configuration
 
-> Setup `post-receive` script
+### 3.1 Setup `post-receive` script
 
 ```bash
 cd /var/repo/{site_name}.git/hooks
@@ -61,7 +61,7 @@ chmod +x post-receive
 
 ## 4. Composer Installation
 
-> Download & Install Composer
+### 4.1 Download & Install Composer
 
 ```bash
 cd ~
@@ -71,7 +71,7 @@ sudo mv ~/composer.phar /usr/local/bin/composer
 
 ## 5. Apache Configuration
 
-> Enable Mod Rewrite
+### 5.1 Enable Mod Rewrite
 
 ```bash
 sudo a2enmod rewrite
@@ -80,7 +80,7 @@ sudo systemctl restart apache2
 
 ## 6. Local Development Setup
 
-> Create SSH Config File
+### 6.1 Create SSH Config File
 
 - Edit `~/.ssh/config`
 
@@ -92,13 +92,13 @@ Host {site_name}
   IdentityFile {IDENTITY_FILE_PATH}
 ```
 
-> Add Git Remote URL
+### 6.2 Add Git Remote URL
 
 ```bash
 git remote add {remote_name} ssh://{site_name}/var/repo/{site_name}.git
 ```
 
-> Deploy Your Application
+### 6.3 Deploy Your Application
 
 ```bash
 git push {remote_name} {branch_name}
@@ -106,7 +106,7 @@ git push {remote_name} {branch_name}
 
 ## 7. Additional Steps to Get Up and Running
 
-> Create `/etc/apache2/sites-available/{site_name}.conf`
+### 7.1 Create `/etc/apache2/sites-available/{site_name}.conf`
 
 ```bash
 sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/{site_name}.conf
@@ -115,13 +115,13 @@ sudo vim /etc/apache2/sites-available/{site_name}.conf
 
 *Update the configuration file according to your site’s requirements*
 
-> Enable the Site
+### 7.2 Enable the Site
 
 ```bash
 sudo a2ensite {site_name}.conf
 ```
 
-> Disable the Default Site (Optional)
+### 7.3 Disable the Default Site (Optional)
 
 ```bash
 sudo a2dissite 000-default.conf
