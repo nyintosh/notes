@@ -27,14 +27,14 @@ sudo systemctl restart apache2
 
 ```bash
 sudo mkdir /var/www/{site_name}
-sudo chown 'user':root /var/www/{site_name}
+sudo chown {user}:root /var/www/{site_name}
 ```
 
 > Setup Git Directory
 
 ```bash
 sudo mkdir -p /var/repo/{site_name}.git
-sudo chown 'user':root /var/repo/{site_name}.git
+sudo chown {user}:root /var/repo/{site_name}.git
 ```
 
 > Initialize Git Repository
@@ -102,4 +102,27 @@ git remote add {remote_name} ssh://{site_name}/var/repo/{site_name}.git
 
 ```bash
 git push {remote_name} {branch_name}
+```
+
+## 7. Additional Steps to Get Up and Running
+
+> Create `/etc/apache2/sites-available/{site_name}.conf`
+
+```bash
+sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/{site_name}.conf
+sudo vim /etc/apache2/sites-available/{site_name}.conf
+```
+
+*Update the configuration file according to your site’s requirements*
+
+> Enable the Site
+
+```bash
+sudo a2ensite {site_name}.conf
+```
+
+> Disable the Default Site (Optional)
+
+```bash
+sudo a2dissite 000-default.conf
 ```
