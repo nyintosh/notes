@@ -79,7 +79,6 @@ check_success "mod rewrite enablement"
 # Add site to Apache availability
 echo -e "\n📄 Adding site to Apache availability for '$SITE_NAME'..."
 sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$SITE_NAME.conf
-sudo a2dissite 000-default.conf
 sudo a2ensite $SITE_NAME.conf
 sudo systemctl reload apache2
 check_success "Add site availability"
