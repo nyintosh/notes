@@ -31,12 +31,8 @@ check_success "apt update && apt upgrade"
 echo -e "\n🔧 Installing Apache2 and PHP libraries..."
 sudo apt install -y apache2
 sudo apt install -y php libapache2-mod-php php-pgsql php-xml php-mbstring php-curl php-gd php-zip unzip
-check_success "apache2 and PHP installation"
-
-# Restart Apache server
-echo -e "\n🔄 Restarting Apache server..."
 sudo systemctl restart apache2
-check_success "apache2 restart"
+check_success "apache2 and PHP installation"
 
 # Setup web directory
 echo -e "\n📂 Setting up web directory for '$SITE_NAME'..."
@@ -58,14 +54,13 @@ check_success "git repository initialization"
 
 # Setup post-receive script
 echo -e "\n🎲 Setting up post-receive script..."
-cd hooks || exit
 echo '#!/bin/sh
 
 WORK_TREE=/var/www/'$SITE_NAME'
 GIT_DIR=/var/repo/'$SITE_NAME'.git
 
-git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f' > post-receive
-chmod +x post-receive
+git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f' > /var/repo/${SITE_NAME}.git/hooks/post-receive
+chmod +x /var/repo/${SITE_NAME}.git/hooks/post-receive
 check_success "post-receive script setup"
 
 # Download and install Composer
@@ -84,8 +79,9 @@ check_success "mod rewrite enablement"
 # Add site to Apache availability
 echo -e "\n📄 Adding site to Apache availability for '$SITE_NAME'..."
 sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$SITE_NAME.conf
+sudo a2dissite 000-default.conf
 sudo a2ensite $SITE_NAME.conf
-sudo systemctl restart apache2
+sudo systemctl reload apache2
 check_success "Add site availability"
 
 echo -e "\n🎊 Server setup for '$SITE_NAME' completed successfully! 🎊"
