@@ -16,6 +16,12 @@ read -p "🎉 Enter the site name: " SITE_NAME
 # Get the current user
 CURRENT_USER=$(whoami)
 
+# Check if the web directory already exists
+if [ -d "/var/www/$SITE_NAME" ]; then
+    echo -e "\033[31mError: The directory /var/www/$SITE_NAME already exists. Please choose a different site name.\033[0m"
+    exit 1
+fi
+
 # Update and upgrade Ubuntu packages
 echo -e "\n🚀 Updating and upgrading Ubuntu packages..."
 sudo apt update && sudo apt upgrade -y
