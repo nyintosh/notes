@@ -85,5 +85,5 @@ sudo systemctl reload apache2
 check_success "Add site availability"
 
 echo -e "\n🎊 Server setup for '$SITE_NAME' completed successfully! 🎊"
-echo -e "🌟 Your Apache server is now ready to serve your site at /var/www/$SITE_NAME 🌟\n"
-echo -e "📝 **Important:** Update **/etc/apache2/sites-available/$SITE_NAME.conf** to configure your site properly.\n"
+echo -e "🌟 Your Apache server is now ready to serve your site at /var/www/$SITE_NAME 🌟"
+echo -e "\n📝 **Important:** Update **/etc/apache2/sites-available/$SITE_NAME.conf** to configure your site properly.\n"
