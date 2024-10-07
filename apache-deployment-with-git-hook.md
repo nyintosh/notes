@@ -126,3 +126,9 @@ sudo a2ensite {site_name}.conf
 ```bash
 sudo a2dissite 000-default.conf
 ```
+
+### 7.3 Restart Apache Server
+
+```bash
+sudo systemctl restart apache2
+```
