@@ -55,7 +55,7 @@ echo '#!/bin/sh
 WORK_TREE=/var/www/{site_name}
 GIT_DIR=/var/repo/{site_name}.git
 
-git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f develop' > post-receive
+git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f' > post-receive
 chmod +x post-receive
 ```
 
