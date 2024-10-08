@@ -25,7 +25,7 @@ fi
 # Update and upgrade Ubuntu packages
 echo -e "\n🚀 Updating and upgrading Ubuntu packages..."
 sudo apt update && sudo apt upgrade -y
-check_success "apt update && apt upgrade"
+check_success "apt update && upgrade"
 
 # Install Apache2 and required PHP libraries
 echo -e "\n🔧 Installing Apache2 and PHP libraries..."
@@ -37,13 +37,15 @@ check_success "apache2 and PHP installation"
 # Setup web directory
 echo -e "\n📂 Setting up web directory for '$SITE_NAME'..."
 sudo mkdir /var/www/$SITE_NAME
-sudo chown "$CURRENT_USER":root /var/www/$SITE_NAME
+sudo chown "$CURRENT_USER":www-data /var/www/$SITE_NAME
+sudo chmod -R 755 /var/www/$SITE_NAME
 check_success "web directory setup"
 
 # Setup git directory
 echo -e "\n📁 Setting up Git directory for '${SITE_NAME}.git'..."
 sudo mkdir -p /var/repo/${SITE_NAME}.git
-sudo chown "$CURRENT_USER":root /var/repo/${SITE_NAME}.git
+sudo chown "$CURRENT_USER":www-data /var/repo/${SITE_NAME}.git
+sudo chmod -R 750 /var/repo/${SITE_NAME}.git
 check_success "git directory setup"
 
 # Initialize Git repository
@@ -54,16 +56,18 @@ check_success "git repository initialization"
 
 # Setup post-receive script
 echo -e "\n🎲 Setting up post-receive script..."
-echo '#!/bin/sh
+sudo bash -c "cat > /var/repo/${SITE_NAME}.git/hooks/post-receive << 'EOL'
+#!/bin/sh
 
-WORK_TREE=/var/www/'$SITE_NAME'
-GIT_DIR=/var/repo/'$SITE_NAME'.git
+WORK_TREE=/var/www/$SITE_NAME
+GIT_DIR=/var/repo/$SITE_NAME.git
 
 read oldrev newrev refname
-BRANCH=$(echo $refname | sed '\''s|refs/heads/||'\'')
+BRANCH=\$(echo \$refname | sed 's|refs/heads/||')
 
-git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f $BRANCH' > /var/repo/${SITE_NAME}.git/hooks/post-receive
-chmod +x /var/repo/${SITE_NAME}.git/hooks/post-receive
+git --work-tree=\$WORK_TREE --git-dir=\$GIT_DIR checkout -f \$BRANCH
+EOL"
+sudo chmod +x /var/repo/${SITE_NAME}.git/hooks/post-receive
 check_success "post-receive script setup"
 
 # Download and install Composer
@@ -73,19 +77,60 @@ curl -sS https://getcomposer.org/installer | php
 sudo mv ~/composer.phar /usr/local/bin/composer
 check_success "Composer installation"
 
-# Enable mod rewrite
-echo -e "\n🔄 Enabling mod rewrite..."
+# Enable mod_rewrite for pretty URLs
+echo -e "\n🔄 Enabling mod_rewrite..."
 sudo a2enmod rewrite
 sudo systemctl restart apache2
-check_success "mod rewrite enablement"
+check_success "mod_rewrite enablement"
 
-# Add site to Apache availability
-echo -e "\n📄 Adding site to Apache availability for '$SITE_NAME'..."
-sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$SITE_NAME.conf
+# Create and configure Apache VirtualHost for Yii2
+echo -e "\n📝 Creating Apache virtual host configuration for '$SITE_NAME'..."
+sudo bash -c "cat > /etc/apache2/sites-available/$SITE_NAME.conf << EOL
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    ServerName www.$SITE_NAME
+    DocumentRoot \"/var/www/$SITE_NAME/basic/web\"
+
+    <Directory \"/var/www/$SITE_NAME/basic/web\">
+        # Enable mod_rewrite for pretty URLs
+        RewriteEngine on
+
+        # Redirect index.php in URLs to a 404 error
+        RewriteRule ^index.php/ - [L,R=404]
+
+        # If a file or directory exists, serve it directly
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+
+        # Otherwise forward the request to index.php
+        RewriteRule . index.php
+
+        # Allow .htaccess overrides and other Apache options
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    # Logging (adjust paths if needed)
+    ErrorLog \${APACHE_LOG_DIR}/$SITE_NAME-error.log
+    CustomLog \${APACHE_LOG_DIR}/$SITE_NAME-access.log combined
+</VirtualHost>
+EOL"
+check_success "Apache virtual host configuration"
+
+# Enable the new site and reload Apache
+echo -e "\n🌐 Enabling site '$SITE_NAME' and reloading Apache..."
 sudo a2ensite $SITE_NAME.conf
 sudo systemctl reload apache2
-check_success "Add site availability"
+check_success "site enablement"
 
-echo -e "\n🎊 Server setup for '$SITE_NAME' completed successfully! 🎊"
-echo -e "🌟 Your Apache server is now ready to serve your site at /var/www/$SITE_NAME 🌟"
-echo -e "\n📝 **Important:** Update **/etc/apache2/sites-available/$SITE_NAME.conf** to configure your site properly.\n"
+# Check for Apache configuration and guide user
+echo -e "\n\033[32m🎊 Server setup for '$SITE_NAME' completed successfully! 🎊\033[0m"
+echo -e "🌟 Your Apache server is now ready to serve your Yii2 site at \033[33m/var/www/$SITE_NAME/basic/web\033[0m 🌟"
+echo -e "\n\033[36m📝 **Important Tasks After Setup**:\033[0m"
+echo -e "  - Review the Apache configuration: \033[33m/etc/apache2/sites-available/$SITE_NAME.conf\033[0m"
+echo -e "  - Consider disabling the default site to avoid conflicts:"
+echo -e "      \033[35msudo a2dissite 000-default.conf && sudo systemctl reload apache2\033[0m"
+echo -e "  - Make sure your DNS settings point to the server's IP address."
+echo -e "  - Set up SSL for HTTPS if needed, e.g., using Let's Encrypt."
+echo -e "\n\033[32m✨ Enjoy your new setup! ✨\033[0m"
