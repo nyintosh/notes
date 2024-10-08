@@ -4,22 +4,25 @@
 
 # Function to check for successful command execution
 check_success() {
-    if [ $? -ne 0 ]; then
-        echo -e "\033[31mError occurred during the execution of: $1\033[0m"
-        exit 1
-    fi
+	if [ $? -ne 0 ]; then
+		echo -e "\033[31mError occurred during the execution of: $1\033[0m"
+		exit 1
+	fi
 }
 
 # Get the site name from user input
 read -p "🎉 Enter the site name: " SITE_NAME
+
+# Get the site admin email from user input
+read -P "✉️ Enter server admin email: " ADMIN_EMAIL
 
 # Get the current user
 CURRENT_USER=$(whoami)
 
 # Check if the web directory already exists
 if [ -d "/var/www/$SITE_NAME" ]; then
-    echo -e "\033[31mError: The directory /var/www/$SITE_NAME already exists. Please choose a different site name.\033[0m"
-    exit 1
+	echo -e "\033[31mError: The directory /var/www/$SITE_NAME already exists. Please choose a different site name.\033[0m"
+	exit 1
 fi
 
 # Update and upgrade Ubuntu packages
@@ -87,11 +90,11 @@ check_success "mod_rewrite enablement"
 echo -e "\n📝 Creating Apache virtual host configuration for '$SITE_NAME'..."
 sudo bash -c "cat > /etc/apache2/sites-available/$SITE_NAME.conf << EOL
 <VirtualHost *:80>
-    ServerAdmin webmaster@localhost
+    ServerAdmin $ADMIN_EMAIL
     ServerName www.$SITE_NAME
-    DocumentRoot \"/var/www/$SITE_NAME/basic/web\"
+    DocumentRoot \"/var/www/$SITE_NAME/web\"
 
-    <Directory \"/var/www/$SITE_NAME/basic/web\">
+    <Directory \"/var/www/$SITE_NAME/web\">
         # Enable mod_rewrite for pretty URLs
         RewriteEngine on
 
@@ -116,7 +119,7 @@ sudo bash -c "cat > /etc/apache2/sites-available/$SITE_NAME.conf << EOL
     CustomLog \${APACHE_LOG_DIR}/$SITE_NAME-access.log combined
 </VirtualHost>
 EOL"
-check_success "Apache virtual host configuration"
+check_success "apache virtual host configuration"
 
 # Enable the new site and reload Apache
 echo -e "\n🌐 Enabling site '$SITE_NAME' and reloading Apache..."
@@ -129,8 +132,8 @@ echo -e "\n\033[32m🎊 Server setup for '$SITE_NAME' completed successfully! �
 echo -e "🌟 Your Apache server is now ready to serve your Yii2 site at \033[33m/var/www/$SITE_NAME/basic/web\033[0m 🌟"
 echo -e "\n\033[36m📝 **Important Tasks After Setup**:\033[0m"
 echo -e "  - Review the Apache configuration: \033[33m/etc/apache2/sites-available/$SITE_NAME.conf\033[0m"
-echo -e "  - Consider disabling the default site to avoid conflicts:"
+echo -e "  - Consider disabling the default site if needed:"
 echo -e "      \033[35msudo a2dissite 000-default.conf && sudo systemctl reload apache2\033[0m"
 echo -e "  - Make sure your DNS settings point to the server's IP address."
 echo -e "  - Set up SSL for HTTPS if needed, e.g., using Let's Encrypt."
-echo -e "\n\033[32m✨ Enjoy your new setup! ✨\033[0m"
+echo -e "\n\033[32m✨ Enjoy your new setup! ✨\033[0m\n\n"
