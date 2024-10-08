@@ -14,14 +14,14 @@ check_success() {
 read -p "🎉 Enter the site name: " SITE_NAME
 
 # Get the site admin email from user input
-read -P "✉️ Enter server admin email: " ADMIN_EMAIL
+read -p "✉️ Enter site admin email: " ADMIN_EMAIL
 
 # Get the current user
 CURRENT_USER=$(whoami)
 
 # Check if the web directory already exists
 if [ -d "/var/www/$SITE_NAME" ]; then
-	echo -e "\033[31mError: The directory /var/www/$SITE_NAME already exists. Please choose a different site name.\033[0m"
+	echo -e "\033[31mError: The directory /var/www/$SITE_NAME already exists. Choose a different site name.\033[0m"
 	exit 1
 fi
 
@@ -90,8 +90,8 @@ check_success "mod_rewrite enablement"
 echo -e "\n📝 Creating Apache virtual host configuration for '$SITE_NAME'..."
 sudo bash -c "cat > /etc/apache2/sites-available/$SITE_NAME.conf << EOL
 <VirtualHost *:80>
-    ServerAdmin $ADMIN_EMAIL
     ServerName www.$SITE_NAME
+    ServerAdmin $ADMIN_EMAIL
     DocumentRoot \"/var/www/$SITE_NAME/web\"
 
     <Directory \"/var/www/$SITE_NAME/web\">
@@ -129,11 +129,12 @@ check_success "site enablement"
 
 # Check for Apache configuration and guide user
 echo -e "\n\033[32m🎊 Server setup for '$SITE_NAME' completed successfully! 🎊\033[0m"
-echo -e "🌟 Your Apache server is now ready to serve your Yii2 site at \033[33m/var/www/$SITE_NAME/basic/web\033[0m 🌟"
+echo -e "🌟 Your Apache server is now ready to serve your site at \033[33m/var/www/$SITE_NAME\033[0m 🌟"
 echo -e "\n\033[36m📝 **Important Tasks After Setup**:\033[0m"
 echo -e "  - Review the Apache configuration: \033[33m/etc/apache2/sites-available/$SITE_NAME.conf\033[0m"
 echo -e "  - Consider disabling the default site if needed:"
 echo -e "      \033[35msudo a2dissite 000-default.conf && sudo systemctl reload apache2\033[0m"
 echo -e "  - Make sure your DNS settings point to the server's IP address."
-echo -e "  - Set up SSL for HTTPS if needed, e.g., using Let's Encrypt."
+echo -e "  - Set up SSL for HTTPS if needed, e.g., using Let's Encrypt. Follow this guide:"
+echo -e "      \033[34mhttps://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu\033[0m"
 echo -e "\n\033[32m✨ Enjoy your new setup! ✨\033[0m\n\n"
