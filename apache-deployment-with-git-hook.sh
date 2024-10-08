@@ -14,7 +14,7 @@ check_success() {
 read -p "🎉 Enter the site name: " SITE_NAME
 
 # Get the site admin email from user input
-read -p "✉️ Enter site admin email: " ADMIN_EMAIL
+read -p "👨🏻‍💻 Enter site admin email: " ADMIN_EMAIL
 
 # Get the current user
 CURRENT_USER=$(whoami)
