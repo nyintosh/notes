@@ -801,7 +801,7 @@ main() {
         ;;
     esac
 
-    print_success "Script execution completed successfully"
+    print_success "\nScript execution completed successfully"
 }
 
 # Script execution
