@@ -22,6 +22,7 @@ BACKUP_DIR="/tmp/server_setup_backup_$(date +%Y%m%d_%H%M%S)"
 # Logging function
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+    echo
 }
 
 # Enhanced output functions
@@ -33,17 +34,17 @@ print_header() {
 
 print_success() {
     echo -e "${GREEN}✅ $1${NC}"
-    log "SUCCESS: $1\n"
+    log "SUCCESS: $1"
 }
 
 print_error() {
     echo -e "${RED}❌ ERROR: $1${NC}" >&2
-    log "ERROR: $1\n"
+    log "ERROR: $1"
 }
 
 print_warning() {
     echo -e "${YELLOW}⚠️  WARNING: $1${NC}"
-    log "WARNING: $1\n"
+    log "WARNING: $1"
 }
 
 print_info() {
@@ -52,7 +53,7 @@ print_info() {
 
 print_step() {
     echo -e "${PURPLE}🔄 $1${NC}"
-    log "STEP: $1\n"
+    log "STEP: $1"
 }
 
 # Enhanced error handling with cleanup
@@ -744,7 +745,7 @@ DEPLOY_SCRIPT
 
 # Main execution flow
 main() {
-    print_header "Server Setup Script v2.0"
+    print_header "Server Setup Script v2.1.0"
     print_info "Log file: $LOG_FILE"
 
     # System checks
