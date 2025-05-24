@@ -797,6 +797,7 @@ main() {
         ;;
     esac
 
+    echo
     print_success "Script execution completed successfully"
 }
 
