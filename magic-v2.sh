@@ -32,26 +32,26 @@ print_header() {
 }
 
 print_success() {
-    echo -e "\n${GREEN}✅ $1${NC}"
+    echo -e "${GREEN}✅ $1${NC}"
     log "SUCCESS: $1"
 }
 
 print_error() {
-    echo -e "\n${RED}❌ ERROR: $1${NC}" >&2
+    echo -e "${RED}❌ ERROR: $1${NC}" >&2
     log "ERROR: $1"
 }
 
 print_warning() {
-    echo -e "\n${YELLOW}⚠️  WARNING: $1${NC}"
+    echo -e "${YELLOW}⚠️  WARNING: $1${NC}"
     log "WARNING: $1"
 }
 
 print_info() {
-    echo -e "\n${CYAN}ℹ️  $1${NC}"
+    echo -e "${CYAN}ℹ️  $1${NC}"
 }
 
 print_step() {
-    echo -e "\n${PURPLE}🔄 $1${NC}"
+    echo -e "${PURPLE}🔄 $1${NC}"
     log "STEP: $1"
 }
 
@@ -194,8 +194,7 @@ get_application_choice() {
     print_header "Application Setup Selection"
 
     while true; do
-        echo -e "${BOLD}🎯 Choose the application type to set up:${NC}\n"
-
+        echo -e "${BOLD}🎯 Choose the application type to set up:${NC}"
         echo -e "  ${CYAN}1)${NC} PostgreSQL installation only"
         echo -e "  ${CYAN}2)${NC} Apache2 + PHP + Composer installation only"
         echo -e "  ${CYAN}3)${NC} Complete Yii2 application setup"
