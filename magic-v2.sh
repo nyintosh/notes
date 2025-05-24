@@ -33,17 +33,17 @@ print_header() {
 
 print_success() {
     echo -e "${GREEN}✅ $1${NC}"
-    log "SUCCESS: $1"
+    log "SUCCESS: $1\n"
 }
 
 print_error() {
     echo -e "${RED}❌ ERROR: $1${NC}" >&2
-    log "ERROR: $1"
+    log "ERROR: $1\n"
 }
 
 print_warning() {
     echo -e "${YELLOW}⚠️  WARNING: $1${NC}"
-    log "WARNING: $1"
+    log "WARNING: $1\n"
 }
 
 print_info() {
@@ -52,7 +52,7 @@ print_info() {
 
 print_step() {
     echo -e "${PURPLE}🔄 $1${NC}"
-    log "STEP: $1"
+    log "STEP: $1\n"
 }
 
 # Enhanced error handling with cleanup
