@@ -32,7 +32,7 @@ print_header() {
 }
 
 print_success() {
-    echo -e "${GREEN}✅ $1${NC}"
+    echo -e "\n${GREEN}✅ $1${NC}"
     log "SUCCESS: $1"
 }
 
@@ -58,8 +58,10 @@ print_step() {
 # Enhanced error handling with cleanup
 cleanup() {
     if [[ -d "$BACKUP_DIR" ]]; then
+        echo
         print_info "Backup files available at: $BACKUP_DIR"
     fi
+    echo
     print_info "Full log available at: $LOG_FILE"
 }
 
@@ -801,7 +803,7 @@ main() {
         ;;
     esac
 
-    print_success "\nScript execution completed successfully"
+    print_success "Script execution completed successfully"
 }
 
 # Script execution
