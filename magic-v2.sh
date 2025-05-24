@@ -343,7 +343,7 @@ install_postgresql() {
     echo -e "   ${CYAN}\\l${NC}                                     # List all databases"
     echo -e "   ${CYAN}\\du${NC}                                    # List all users/roles"
     echo -e "   ${CYAN}\\c database_name${NC}                      # Switch to database"
-    echo -e "   ${CYAN}\\dt${NC}                                    # List tables in current DB"
+    echo -e "${CYAN}\\dt${NC}                                    # List tables in current DB"
     echo -e "   ${CYAN}\\q${NC}                                     # Quit PostgreSQL\n"
 
     echo -e "${YELLOW}7. Create your first database and user:${NC}"
