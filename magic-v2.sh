@@ -306,22 +306,10 @@ install_postgresql() {
     print_success "PostgreSQL installation completed"
 
     # Post-installation guidance
-    print_header "PostgreSQL Configuration Guide"
-    echo -e "${BOLD}📋 Essential PostgreSQL Configuration Steps:${NC}\n"
-
-    echo -e "${YELLOW}1. Set PostgreSQL superuser password:${NC}"
-    echo -e "   ${CYAN}sudo -u postgres psql${NC}"
-    echo -e "   ${CYAN}ALTER USER postgres WITH ENCRYPTED PASSWORD 'your_secure_password';${NC}"
-    echo -e "   ${CYAN}\\q${NC}\n"
-
-    echo -e "${YELLOW}2. Configure network access (optional):${NC}"
-    echo -e "   Edit: ${CYAN}/etc/postgresql/*/main/postgresql.conf${NC}"
-    echo -e "   Set: ${CYAN}listen_addresses = 'localhost'${NC} (or '*' for all interfaces)\n"
-
     echo -e "${YELLOW}3. Configure authentication:${NC}"
     echo -e "   Edit: ${CYAN}/etc/postgresql/*/main/pg_hba.conf${NC}"
     echo -e "   Example secure configuration:"
-    echo -e "   ${CYAN}local   all             postgres                                scram-sha-256${NC}"
+    echo -e "   ${CYAN}local   all             postgres                               scram-sha-256${NC}"
     echo -e "   ${CYAN}host    all             all             192.168.1.0/24         scram-sha-256${NC}\n"
 
     echo -e "${YELLOW}4. Restart PostgreSQL after configuration:${NC}"
@@ -329,6 +317,69 @@ install_postgresql() {
 
     echo -e "${YELLOW}5. Test connection:${NC}"
     echo -e "   ${CYAN}sudo -u postgres psql -c 'SELECT version();'${NC}\n"
+
+    echo -e "${YELLOW}6. Login and access PostgreSQL:${NC}"
+    echo -e "   ${CYAN}psql -U postgres -W${NC}"
+    echo -e "   ${CYAN}# Enter your postgres user password when prompted${NC}"
+    echo -e "   ${CYAN}# Use \\l to list databases, \\q to quit${NC}\n"
+
+    # Post-installation guidance
+    print_header "PostgreSQL Configuration Guide"
+    echo -e "${YELLOW}📋 Essential PostgreSQL Configuration Steps:${NC}\n"
+
+    echo -e "${YELLOW}1. Set PostgreSQL superuser password:${NC}"
+    echo -e "   ${CYAN}sudo -u postgres psql${NC}"
+    echo -e "   ${CYAN}ALTER USER postgres WITH ENCRYPTED PASSWORD 'your_secure_password';${NC}"
+    echo -e "   ${CYAN}\\q${NC}\n"
+
+    echo -e "${YELLOW}2. Configure authentication (Required):${NC}"
+    echo -e "   Edit: ${CYAN}sudo nano /etc/postgresql/*/main/pg_hba.conf${NC}"
+    echo -e "   ${YELLOW}Change this line:${NC}"
+    echo -e "   ${RED}local   all             postgres                                peer${NC}"
+    echo -e "   ${YELLOW}To this:${NC}"
+    echo -e "   ${GREEN}local   all             postgres                                scram-sha-256${NC}"
+    echo -e "   ${YELLOW}Ensure other entries use scram-sha-256:${NC}"
+    echo -e "   ${CYAN}local   all             all                                     scram-sha-256${NC}"
+    echo -e "   ${CYAN}host    all             all             127.0.0.1/32            scram-sha-256${NC}\n"
+
+    echo -e "${YELLOW}3. Configure network access (Optional - for remote connections):${NC}"
+    echo -e "   Edit: ${CYAN}sudo nano /etc/postgresql/*/main/postgresql.conf${NC}"
+    echo -e "   Find and modify: ${CYAN}listen_addresses = 'localhost'${NC}"
+    echo -e "   ${GRAY}# Use 'localhost' for local only, or '*' for all interfaces${NC}\n"
+
+    echo -e "${YELLOW}4. Restart PostgreSQL service:${NC}"
+    echo -e "   ${CYAN}sudo systemctl restart postgresql${NC}"
+    echo -e "   ${CYAN}sudo systemctl status postgresql${NC} ${GRAY}# Verify it's running${NC}\n"
+
+    echo -e "${YELLOW}5. Test connection methods:${NC}"
+    echo -e "   ${YELLOW}Initial test (should work immediately):${NC}"
+    echo -e "   ${CYAN}sudo -u postgres psql -c 'SELECT version();'${NC}"
+    echo -e "   ${YELLOW}Password authentication test:${NC}"
+    echo -e "   ${CYAN}psql -U postgres -W${NC}"
+    echo -e "   ${CYAN}psql -h localhost -U postgres -W${NC} ${GRAY}# If socket connection fails${NC}\n"
+
+    echo -e "${YELLOW}6. Essential PostgreSQL commands:${NC}"
+    echo -e "   ${YELLOW}Connection commands:${NC}"
+    echo -e "   ${CYAN}psql -U postgres -W${NC}                    ${GRAY}# Connect with password${NC}"
+    echo -e "   ${CYAN}psql -U postgres -d database_name -W${NC}   ${GRAY}# Connect to specific DB${NC}"
+    echo -e "   ${CYAN}psql -h localhost -U postgres -W${NC}       ${GRAY}# Force TCP connection${NC}"
+    echo -e "   ${YELLOW}Inside PostgreSQL:${NC}"
+    echo -e "   ${CYAN}\\l${NC}                                      ${GRAY}# List all databases${NC}"
+    echo -e "   ${CYAN}\\du${NC}                                     ${GRAY}# List all users/roles${NC}"
+    echo -e "   ${CYAN}\\c database_name${NC}                       ${GRAY}# Switch to database${NC}"
+    echo -e "   ${CYAN}\\dt${NC}                                     ${GRAY}# List tables in current DB${NC}"
+    echo -e "   ${CYAN}\\q${NC}                                      ${GRAY}# Quit PostgreSQL${NC}\n"
+
+    echo -e "${YELLOW}7. Create your first database and user:${NC}"
+    echo -e "   ${CYAN}CREATE DATABASE myapp;${NC}"
+    echo -e "   ${CYAN}CREATE USER myuser WITH ENCRYPTED PASSWORD 'mypassword';${NC}"
+    echo -e "   ${CYAN}GRANT ALL PRIVILEGES ON DATABASE myapp TO myuser;${NC}"
+    echo -e "   ${CYAN}\\q${NC}\n"
+
+    echo -e "${YELLOW}🔧 Troubleshooting:${NC}"
+    echo -e "${RED}• Peer authentication failed:${NC} Check pg_hba.conf configuration (Step 2)"
+    echo -e "${RED}• Connection refused:${NC} Ensure PostgreSQL service is running (Step 4)"
+    echo -e "${RED}• Password authentication failed:${NC} Verify password was set correctly (Step 1)\n"
 
     print_info "PostgreSQL service status:"
     sudo systemctl status postgresql --no-pager -l
