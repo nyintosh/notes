@@ -285,9 +285,6 @@ install_postgresql() {
     # Check if already installed
     if systemctl is-active --quiet postgresql 2>/dev/null; then
         print_warning "PostgreSQL is already installed and running"
-        local version
-        version=$(sudo -u postgres psql -c "SELECT version();" 2>/dev/null | head -1 || echo "Unknown")
-        print_info "Current version: $version"
 
         read -p "Continue with configuration? (Y/n): " -r
         if [[ ! ${REPLY:-Y} =~ ^[Yy]$ ]]; then
