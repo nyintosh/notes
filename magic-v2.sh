@@ -32,36 +32,34 @@ print_header() {
 }
 
 print_success() {
-    echo -e "\n${GREEN}✅ $1${NC}"
+    echo -e "\n${GREEN}✅ $1${NC}\n"
     log "SUCCESS: $1"
 }
 
 print_error() {
-    echo -e "${RED}❌ ERROR: $1${NC}" >&2
+    echo -e "\n${RED}❌ ERROR: $1${NC}\n" >&2
     log "ERROR: $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}⚠️  WARNING: $1${NC}"
+    echo -e "\n${YELLOW}⚠️  WARNING: $1${NC}\n"
     log "WARNING: $1"
 }
 
 print_info() {
-    echo -e "${CYAN}ℹ️  $1${NC}"
+    echo -e "\n${CYAN}ℹ️  $1${NC}\n"
 }
 
 print_step() {
-    echo -e "${PURPLE}🔄 $1${NC}"
+    echo -e "\n${PURPLE}🔄 $1${NC}\n"
     log "STEP: $1"
 }
 
 # Enhanced error handling with cleanup
 cleanup() {
     if [[ -d "$BACKUP_DIR" ]]; then
-        echo
         print_info "Backup files available at: $BACKUP_DIR"
     fi
-    echo
     print_info "Full log available at: $LOG_FILE"
 }
 
@@ -346,11 +344,11 @@ install_postgresql() {
     echo -e "   ${CYAN}psql -U postgres -d database_name -W${NC}   # Connect to specific DB"
     echo -e "   ${CYAN}psql -h localhost -U postgres -W${NC}       # Force TCP connection"
     echo -e "   ${BOLD}Inside PostgreSQL:${NC}"
-    echo -e "   ${CYAN}\\l${NC}                                      # List all databases"
-    echo -e "   ${CYAN}\\du${NC}                                     # List all users/roles"
-    echo -e "   ${CYAN}\\c database_name${NC}                       # Switch to database"
-    echo -e "   ${CYAN}\\dt${NC}                                     # List tables in current DB"
-    echo -e "   ${CYAN}\\q${NC}                                      # Quit PostgreSQL\n"
+    echo -e "   ${CYAN}\\l${NC}                                     # List all databases"
+    echo -e "   ${CYAN}\\du${NC}                                    # List all users/roles"
+    echo -e "   ${CYAN}\\c database_name${NC}                      # Switch to database"
+    echo -e "   ${CYAN}\\dt${NC}                                    # List tables in current DB"
+    echo -e "   ${CYAN}\\q${NC}                                     # Quit PostgreSQL\n"
 
     echo -e "${YELLOW}7. Create your first database and user:${NC}"
     echo -e "   ${CYAN}CREATE DATABASE 'your_database_name';${NC}"
@@ -359,9 +357,9 @@ install_postgresql() {
     echo -e "   ${CYAN}\\q${NC}\n"
 
     echo -e "${BOLD}🔧 Troubleshooting:${NC}"
-    echo -e "${RED}• Peer authentication failed:${NC} Check pg_hba.conf configuration (Step 2)"
-    echo -e "${RED}• Connection refused:${NC} Ensure PostgreSQL service is running (Step 4)"
-    echo -e "${RED}• Password authentication failed:${NC} Verify password was set correctly (Step 1)\n"
+    echo -e "   ${RED}• Peer authentication failed:${NC} Check pg_hba.conf configuration (Step 2)"
+    echo -e "   ${RED}• Connection refused:${NC} Ensure PostgreSQL service is running (Step 4)"
+    echo -e "   ${RED}• Password authentication failed:${NC} Verify password was set correctly (Step 1)\n"
 
     print_info "PostgreSQL service status:"
     sudo systemctl status postgresql --no-pager -l
