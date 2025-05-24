@@ -32,26 +32,26 @@ print_header() {
 }
 
 print_success() {
-    echo -e "\n${GREEN}✅ $1${NC}\n"
+    echo -e "\n${GREEN}✅ $1${NC}"
     log "SUCCESS: $1"
 }
 
 print_error() {
-    echo -e "\n${RED}❌ ERROR: $1${NC}\n" >&2
+    echo -e "\n${RED}❌ ERROR: $1${NC}" >&2
     log "ERROR: $1"
 }
 
 print_warning() {
-    echo -e "\n${YELLOW}⚠️  WARNING: $1${NC}\n"
+    echo -e "\n${YELLOW}⚠️  WARNING: $1${NC}"
     log "WARNING: $1"
 }
 
 print_info() {
-    echo -e "\n${CYAN}ℹ️  $1${NC}\n"
+    echo -e "\n${CYAN}ℹ️  $1${NC}"
 }
 
 print_step() {
-    echo -e "\n${PURPLE}🔄 $1${NC}\n"
+    echo -e "\n${PURPLE}🔄 $1${NC}"
     log "STEP: $1"
 }
 
